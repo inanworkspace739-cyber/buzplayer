@@ -86,5 +86,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>For scanning QR codes to import M3U playlists.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>To optimize streaming connection routing and regional content.</string>
 </dict>
 </plist>
