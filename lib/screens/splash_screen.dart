@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import '../theme/app_theme.dart';
+import '../utils/responsive_helper.dart';
 import '../widgets/buz_logo.dart';
 import 'home_screen.dart';
 
@@ -24,9 +25,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    // Orientation will be set in didChangeDependencies when context is available
 
     _animationController = AnimationController(
       vsync: this,
@@ -44,6 +43,12 @@ class _SplashScreenState extends State<SplashScreen>
         _startLoading();
       });
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    ResponsiveHelper.setPortraitOrAllOrientations(context);
   }
 
   Future<void> _requestTrackingPermission() async {
@@ -97,6 +102,12 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isTab = ResponsiveHelper.isTablet(context);
+    final logoSize = isTab ? 200.0 : 150.0;
+    final titleSize = isTab ? 48.0 : 36.0;
+    final subtitleSize = isTab ? 16.0 : 12.0;
+    final progressPadding = isTab ? 120.0 : 64.0;
+
     // Using current AppTheme.bgDark as the base background color
     return Scaffold(
       backgroundColor: AppTheme.bgDark,
@@ -108,8 +119,8 @@ class _SplashScreenState extends State<SplashScreen>
             children: [
               // Logo
               Container(
-                width: 150,
-                height: 150,
+                width: logoSize,
+                height: logoSize,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(32),
                   boxShadow: [
@@ -126,8 +137,8 @@ class _SplashScreenState extends State<SplashScreen>
                     'assets/icon.png',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return const BuzLogo(
-                        size: 150,
+                      return BuzLogo(
+                        size: logoSize,
                         borderRadius: 32,
                       );
                     },
@@ -140,7 +151,7 @@ class _SplashScreenState extends State<SplashScreen>
                 'Buzar\nSmart IPTV Player',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.outfit(
-                  fontSize: 36,
+                  fontSize: titleSize,
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
                   letterSpacing: 1.2,
@@ -150,7 +161,7 @@ class _SplashScreenState extends State<SplashScreen>
               Text(
                 'PREMIUM VIDEO PLAYER',
                 style: GoogleFonts.inter(
-                  fontSize: 12,
+                  fontSize: subtitleSize,
                   fontWeight: FontWeight.w600,
                   color: Colors.white.withValues(alpha: 0.6),
                   letterSpacing: 4,
@@ -159,30 +170,33 @@ class _SplashScreenState extends State<SplashScreen>
               const SizedBox(height: 64),
               // Progress Bar
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 64),
-                child: Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: LinearProgressIndicator(
-                        value: _progress,
-                        minHeight: 6,
-                        backgroundColor: Colors.white.withValues(alpha: 0.1),
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          AppTheme.accent,
+                padding: EdgeInsets.symmetric(horizontal: progressPadding),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 400),
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: LinearProgressIndicator(
+                          value: _progress,
+                          minHeight: isTab ? 8 : 6,
+                          backgroundColor: Colors.white.withValues(alpha: 0.1),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppTheme.accent,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '${(_progress * 100).toInt()}%',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: Colors.white.withValues(alpha: 0.7),
-                        fontWeight: FontWeight.w600,
+                      const SizedBox(height: 16),
+                      Text(
+                        '${(_progress * 100).toInt()}%',
+                        style: GoogleFonts.inter(
+                          fontSize: subtitleSize,
+                          color: Colors.white.withValues(alpha: 0.7),
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
+import '../utils/responsive_helper.dart';
 import '../widgets/buz_logo.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -29,74 +30,79 @@ class SettingsScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 40),
-              // Logo
-              const BuzLogo(
-                size: 96,
-                borderRadius: 24,
+        body: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: ResponsiveHelper.maxContentWidth(context)),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 40),
+                  // Logo
+                  BuzLogo(
+                    size: ResponsiveHelper.isTablet(context) ? 130 : 96,
+                    borderRadius: 24,
+                  ),
+                  const SizedBox(height: 24),
+                  // App Name
+                  Text(
+                    'Buzar - Smart IPTV Player',
+                    style: GoogleFonts.outfit(
+                      fontSize: ResponsiveHelper.isTablet(context) ? 32 : 24,
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.textPrimary,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Subtitle
+                  Text(
+                    'Your ultimate video streaming hub',
+                    style: GoogleFonts.inter(
+                      fontSize: ResponsiveHelper.isTablet(context) ? 20 : 16,
+                      color: AppTheme.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 60),
+                  // Buttons
+                  _buildSettingsButton(
+                    icon: Icons.share_rounded,
+                    title: 'Share App',
+                    onTap: () {
+                      final appLink = 'https://apps.apple.com/app/id6768378618';
+                      Share.shareUri(Uri.parse(appLink));
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSettingsButton(
+                    icon: Icons.star_rounded,
+                    title: 'Rate Us',
+                    onTap: () async {
+                      final Uri url = Uri.parse(
+                        'https://apps.apple.com/app/id6768378618?action=write-review',
+                      );
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url, mode: LaunchMode.externalApplication);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSettingsButton(
+                    icon: Icons.policy_rounded,
+                    title: 'Privacy Policy',
+                    onTap: () async {
+                      final Uri url = Uri.parse(
+                        'https://buzariptv.blogspot.com/2026/05/blog-post.html',
+                      );
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url, mode: LaunchMode.externalApplication);
+                      }
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: 24),
-              // App Name
-              Text(
-                'Buzar - Smart IPTV Player',
-                style: GoogleFonts.outfit(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: AppTheme.textPrimary,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Subtitle
-              Text(
-                'Your ultimate video streaming hub',
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  color: AppTheme.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 60),
-              // Buttons
-              _buildSettingsButton(
-                icon: Icons.share_rounded,
-                title: 'Share App',
-                onTap: () {
-                  final appLink = 'https://apps.apple.com/app/id6768378618';
-                  Share.shareUri(Uri.parse(appLink));
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildSettingsButton(
-                icon: Icons.star_rounded,
-                title: 'Rate Us',
-                onTap: () async {
-                  final Uri url = Uri.parse(
-                    'https://apps.apple.com/app/id6768378618?action=write-review',
-                  );
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url, mode: LaunchMode.externalApplication);
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildSettingsButton(
-                icon: Icons.policy_rounded,
-                title: 'Privacy Policy',
-                onTap: () async {
-                  final Uri url = Uri.parse(
-                    'https://buzariptv.blogspot.com/2026/05/blog-post.html',
-                  );
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url, mode: LaunchMode.externalApplication);
-                  }
-                },
-              ),
-            ],
+            ),
           ),
         ),
       ),

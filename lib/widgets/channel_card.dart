@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/channel.dart';
 import '../theme/app_theme.dart';
+import '../utils/responsive_helper.dart';
 import 'glass_container.dart';
 
 class ChannelCard extends StatelessWidget {
@@ -28,88 +29,97 @@ class ChannelCard extends StatelessWidget {
   }
 
   Widget _buildGridCard() {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: GlassContainer(
-          child: Stack(
-            children: [
-              // Content
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: AppTheme.bgElevated,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: _buildLogo(size: 56),
-                    ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        channel.name,
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.outfit(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.textPrimary,
+    return Builder(
+      builder: (context) {
+        final isTab = ResponsiveHelper.isTablet(context);
+        final logoSize = isTab ? 72.0 : 56.0;
+        final fontSize = isTab ? 16.0 : 13.0;
+        final groupFontSize = isTab ? 14.0 : 11.0;
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: onTap,
+            child: GlassContainer(
+              child: Stack(
+                children: [
+                  // Content
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: logoSize,
+                          height: logoSize,
+                          decoration: BoxDecoration(
+                            color: AppTheme.bgElevated,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: _buildLogo(size: logoSize),
                         ),
-                      ),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            channel.name,
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.outfit(
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.textPrimary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        if (channel.group.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              channel.group,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.inter(
+                                fontSize: groupFontSize,
+                                color: AppTheme.textMuted,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                    const SizedBox(height: 4),
-                    if (channel.group.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(
-                          channel.group,
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            color: AppTheme.textMuted,
+                  ),
+                  // Favorite button
+                  if (onToggleFavorite != null)
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: GestureDetector(
+                        onTap: onToggleFavorite,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            color: isFavorite ? Colors.redAccent : Colors.white70,
+                            size: 16,
                           ),
                         ),
                       ),
-                  ],
-                ),
-              ),
-              // Favorite button
-              if (onToggleFavorite != null)
-                Positioned(
-                  top: 6,
-                  right: 6,
-                  child: GestureDetector(
-                    onTap: onToggleFavorite,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        isFavorite
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_border_rounded,
-                        color: isFavorite ? Colors.redAccent : Colors.white70,
-                        size: 16,
-                      ),
                     ),
-                  ),
-                ),
-            ],
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

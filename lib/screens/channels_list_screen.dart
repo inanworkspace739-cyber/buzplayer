@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/playlist_provider.dart';
 import '../models/channel.dart';
 import '../theme/app_theme.dart';
+import '../utils/responsive_helper.dart';
 import '../widgets/channel_card.dart';
 import '../widgets/category_chips.dart';
 import 'video_player_screen.dart';
@@ -176,10 +177,11 @@ class _ChannelsListScreenState extends State<ChannelsListScreen> {
                 }
 
                 if (_isGridView) {
+                  final columns = ResponsiveHelper.gridColumns(context);
                   return GridView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: columns,
                       childAspectRatio: 1.1,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,

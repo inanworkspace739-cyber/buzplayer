@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../providers/playlist_provider.dart';
 import '../theme/app_theme.dart';
 import '../models/playlist.dart';
+import '../utils/responsive_helper.dart';
 import '../widgets/glass_container.dart';
 import 'main_player_screen.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -61,6 +62,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
     final provider = context.watch<PlaylistProvider>();
     final playlistName = provider.currentPlaylist?.name ?? 'My Playlist';
+    final fs = ResponsiveHelper.fontScale(context);
+    final hPad = ResponsiveHelper.contentPadding(context);
     
     // Channel Counts
     final liveCount = provider.liveChannels.length;
@@ -120,7 +123,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             // Scroll View
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: hPad),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -135,7 +138,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     Text(
                       'Welcome Back',
                       style: GoogleFonts.outfit(
-                        fontSize: 16,
+                        fontSize: 16 * fs,
                         fontWeight: FontWeight.w500,
                         color: AppTheme.textMuted,
                       ),
@@ -144,7 +147,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     Text(
                       'Choose Content Type',
                       style: GoogleFonts.outfit(
-                        fontSize: 26,
+                        fontSize: 26 * fs,
                         fontWeight: FontWeight.w800,
                         color: Colors.white,
                         letterSpacing: -0.5,
@@ -316,18 +319,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
     required LinearGradient bgGradient,
     required int initialTab,
   }) {
+    final heroHeight = ResponsiveHelper.heroCardHeight(context);
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => MainPlayerScreen(initialTab: initialTab)),
         ).then((_) {
-          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+          ResponsiveHelper.setPortraitOrAllOrientations(context);
           SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
         });
       },
       child: Container(
-        height: 190,
+        height: heroHeight,
         decoration: BoxDecoration(
           gradient: bgGradient,
           borderRadius: BorderRadius.circular(32),
@@ -420,18 +425,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
     required LinearGradient bgGradient,
     required int initialTab,
   }) {
+    final splitHeight = ResponsiveHelper.splitCardHeight(context);
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => MainPlayerScreen(initialTab: initialTab)),
         ).then((_) {
-          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+          ResponsiveHelper.setPortraitOrAllOrientations(context);
           SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
         });
       },
       child: Container(
-        height: 190,
+        height: splitHeight,
         decoration: BoxDecoration(
           gradient: bgGradient,
           borderRadius: BorderRadius.circular(32),

@@ -40,7 +40,7 @@ class _MainPlayerScreenState extends State<MainPlayerScreen> {
     super.initState();
     _currentTab = widget.initialTab;
 
-    // Force landscape
+    // Force landscape (will be called after context available in didChangeDependencies)
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -75,7 +75,7 @@ class _MainPlayerScreenState extends State<MainPlayerScreen> {
   void dispose() {
     _player.dispose();
     _searchController.dispose();
-    // Restore portrait
+    // Restore portrait / all orientations
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
@@ -164,57 +164,58 @@ class _MainPlayerScreenState extends State<MainPlayerScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               // ── LEFT: Categories ──
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.22,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.03),
-                                  borderRadius: BorderRadius.circular(24),
-                                  border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.05),
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.2,
-                                      ),
-                                      blurRadius: 15,
+                              Expanded(
+                                flex: 2,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.03),
+                                    borderRadius: BorderRadius.circular(24),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(alpha: 0.05),
                                     ),
-                                  ],
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(24),
-                                  child: _buildCategorySidebar(provider),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.2),
+                                        blurRadius: 15,
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(24),
+                                    child: _buildCategorySidebar(provider),
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 12),
 
                               // ── CENTER: Channel List ──
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.35,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.03),
-                                  borderRadius: BorderRadius.circular(24),
-                                  border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.05),
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.2,
-                                      ),
-                                      blurRadius: 15,
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.03),
+                                    borderRadius: BorderRadius.circular(24),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(alpha: 0.05),
                                     ),
-                                  ],
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(24),
-                                  child: _buildChannelList(provider),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.2),
+                                        blurRadius: 15,
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(24),
+                                    child: _buildChannelList(provider),
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 12),
 
                               // ── RIGHT: Live Video Preview ──
                               Expanded(
+                                flex: 4,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.black.withValues(alpha: 0.4),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/playlist_provider.dart';
 import '../services/ad_manager.dart';
 import '../theme/app_theme.dart';
+import '../utils/responsive_helper.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/pro_loading_overlay.dart';
 import 'category_screen.dart';
@@ -237,14 +238,23 @@ class _AddPlaylistScreenState extends State<AddPlaylistScreen>
                         _nativeAd != null &&
                         !isKeyboardVisible &&
                         isScreenTallEnough)
-                      Container(
-                        height:
-                            320, // TemplateType.medium requires larger height to accommodate video media view safely
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ).copyWith(bottom: 24),
-                        child: AdWidget(ad: _nativeAd!),
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: ResponsiveHelper.maxContentWidth(context),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              height: 320,
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ).copyWith(bottom: 24),
+                              child: AdWidget(ad: _nativeAd!),
+                            ),
+                          ),
+                        ),
                       ),
                   ],
                 ),
@@ -263,8 +273,22 @@ class _AddPlaylistScreenState extends State<AddPlaylistScreen>
     );
   }
 
+  /// Wraps tab content in a centered, max-width constrained container for iPad.
+  Widget _wrapForTablet(BuildContext context, Widget child) {
+    final maxWidth = ResponsiveHelper.maxContentWidth(context);
+    if (maxWidth == double.infinity) return child;
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: child,
+      ),
+    );
+  }
+
   Widget _buildM3uUrlTab(PlaylistProvider provider) {
-    return SingleChildScrollView(
+    return _wrapForTablet(
+      context,
+      SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,11 +324,14 @@ class _AddPlaylistScreenState extends State<AddPlaylistScreen>
           ),
         ],
       ),
+    ),
     );
   }
 
   Widget _buildLocalFileTab(PlaylistProvider provider) {
-    return SingleChildScrollView(
+    return _wrapForTablet(
+      context,
+      SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -420,6 +447,7 @@ class _AddPlaylistScreenState extends State<AddPlaylistScreen>
           ),
         ],
       ),
+    ),
     );
   }
 
@@ -447,7 +475,9 @@ class _AddPlaylistScreenState extends State<AddPlaylistScreen>
   }
 
   Widget _buildXtreamTab(PlaylistProvider provider) {
-    return SingleChildScrollView(
+    return _wrapForTablet(
+      context,
+      SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -519,6 +549,7 @@ class _AddPlaylistScreenState extends State<AddPlaylistScreen>
           ),
         ],
       ),
+    ),
     );
   }
 

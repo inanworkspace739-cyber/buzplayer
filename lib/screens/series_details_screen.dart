@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../models/channel.dart';
 import '../providers/playlist_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/responsive_helper.dart';
 import 'video_player_screen.dart';
 
 class SeriesDetailsScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    // Orientation set in didChangeDependencies
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -202,7 +204,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
               slivers: [
                 SliverAppBar(
                   backgroundColor: Colors.transparent,
-                  expandedHeight: 250,
+                  expandedHeight: ResponsiveHelper.isTablet(context) ? 350 : 250,
                   pinned: true,
                   leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios_rounded, color: Colors.white),
@@ -238,7 +240,7 @@ class _SeriesDetailsScreenState extends State<SeriesDetailsScreen> {
                           child: Text(
                             widget.seriesChannel.name,
                             style: GoogleFonts.outfit(
-                              fontSize: 24,
+                              fontSize: ResponsiveHelper.isTablet(context) ? 32 : 24,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                               shadows: [

@@ -8,6 +8,7 @@ import '../providers/playlist_provider.dart';
 import '../services/ad_manager.dart';
 import '../theme/app_theme.dart';
 import '../models/playlist.dart';
+import '../utils/responsive_helper.dart';
 import '../widgets/pro_loading_overlay.dart';
 import '../widgets/buz_logo.dart';
 import '../widgets/glass_container.dart';
@@ -41,11 +42,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
     _fadeController.forward();
 
-    // Enforce portrait mode initially
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // Orientation will be set in didChangeDependencies when context is available
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     _loadBannerAd();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    ResponsiveHelper.setPortraitOrAllOrientations(context);
   }
 
   void _loadBannerAd() {
@@ -81,6 +87,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final playlists = context.watch<PlaylistProvider>().playlists;
+    final isTab = ResponsiveHelper.isTablet(context);
+    final hPad = ResponsiveHelper.contentPadding(context);
+    final fs = ResponsiveHelper.fontScale(context);
 
     return Scaffold(
       bottomNavigationBar: _isBannerAdLoaded && _bannerAd != null
@@ -101,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               top: -80,
               left: -80,
               child: Container(
-                width: 250,
-                height: 250,
+                width: isTab ? 400 : 250,
+                height: isTab ? 400 : 250,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppTheme.primary.withValues(alpha: 0.15),
@@ -117,8 +126,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               top: 300,
               right: -100,
               child: Container(
-                width: 300,
-                height: 300,
+                width: isTab ? 500 : 300,
+                height: isTab ? 500 : 300,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppTheme.primaryLight.withValues(alpha: 0.08),
@@ -139,17 +148,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     // ── Header (Floating Glassmorphic Panel) ──
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                        padding: EdgeInsets.fromLTRB(hPad, 20, hPad, 10),
                         child: GlassContainer(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isTab ? 24 : 16,
+                            vertical: isTab ? 16 : 12,
                           ),
                           borderRadius: 24,
                           child: Row(
                             children: [
-                              const BuzLogo(size: 44, borderRadius: 12),
-                              const SizedBox(width: 12),
+                              BuzLogo(size: isTab ? 56 : 44, borderRadius: 12),
+                              SizedBox(width: isTab ? 16 : 12),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       child: Text(
                                         'Buzar - Smart IPTV Player',
                                         style: GoogleFonts.outfit(
-                                          fontSize: 22,
+                                          fontSize: 22 * fs,
                                           fontWeight: FontWeight.w800,
                                           color: Colors.white,
                                           letterSpacing: -0.5,
@@ -175,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Text(
                                       'Premium Video Player',
                                       style: GoogleFonts.inter(
-                                        fontSize: 11,
+                                        fontSize: 11 * fs,
                                         fontWeight: FontWeight.w500,
                                         color: AppTheme.textSecondary
                                             .withValues(alpha: 0.6),
@@ -193,10 +202,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   shape: BoxShape.circle,
                                 ),
                                 child: IconButton(
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.settings_rounded,
                                     color: Colors.white,
-                                    size: 22,
+                                    size: isTab ? 28 : 22,
                                   ),
                                   onPressed: () {
                                     Navigator.push(
@@ -219,16 +228,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       child: _buildHeroSection(context, playlists),
                     ),
 
-                    const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: isTab ? 32 : 20),
+                    ),
 
                     // ── Connection Grid section header ──
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        padding: EdgeInsets.symmetric(horizontal: hPad + 4),
                         child: Text(
                           'Quick Connect',
                           style: GoogleFonts.outfit(
-                            fontSize: 18,
+                            fontSize: 18 * fs,
                             fontWeight: FontWeight.w600,
                             color: AppTheme.textPrimary,
                           ),
@@ -236,12 +247,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     ),
 
-                    const SliverToBoxAdapter(child: SizedBox(height: 14)),
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: isTab ? 20 : 14),
+                    ),
 
                     // ── 3 Connection Grid Options (Horizontal side-by-side) ──
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: hPad),
                         child: IntrinsicHeight(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -252,14 +265,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 color: AppTheme.primaryLight,
                                 onTap: () => _navigateToAddPlaylist(context, 0),
                               ),
-                              const SizedBox(width: 12),
+                              SizedBox(width: isTab ? 20 : 12),
                               _buildGridOption(
                                 icon: Icons.folder_open_rounded,
                                 title: 'Local File',
                                 color: const Color(0xFF00D2FF),
                                 onTap: () => _navigateToAddPlaylist(context, 1),
                               ),
-                              const SizedBox(width: 12),
+                              SizedBox(width: isTab ? 20 : 12),
                               _buildGridOption(
                                 icon: Icons.dns_rounded,
                                 title: 'Xtream Codes',
@@ -284,10 +297,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildHeroSection(BuildContext context, List<Playlist> playlists) {
+    final isTab = ResponsiveHelper.isTablet(context);
+    final hPad = ResponsiveHelper.contentPadding(context);
+    final fs = ResponsiveHelper.fontScale(context);
+
     if (playlists.isEmpty) {
       return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        padding: const EdgeInsets.all(22),
+        margin: EdgeInsets.symmetric(horizontal: hPad, vertical: 10),
+        padding: EdgeInsets.all(isTab ? 32 : 22),
         decoration: BoxDecoration(
           color: AppTheme.bgCard.withValues(alpha: 0.65),
           borderRadius: BorderRadius.circular(24),
@@ -301,15 +318,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.all(isTab ? 12 : 8),
                   decoration: BoxDecoration(
                     color: AppTheme.gold.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.star_rounded,
                     color: AppTheme.gold,
-                    size: 20,
+                    size: isTab ? 28 : 20,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -317,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   child: Text(
                     'WELCOME TO BUZAR - SMART IPTV PLAYER',
                     style: GoogleFonts.inter(
-                      fontSize: 11,
+                      fontSize: 11 * fs,
                       fontWeight: FontWeight.w800,
                       color: AppTheme.gold,
                       letterSpacing: 1.2,
@@ -330,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Text(
               'Begin Your Journey',
               style: GoogleFonts.outfit(
-                fontSize: 22,
+                fontSize: 22 * fs,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
@@ -339,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Text(
               'Add your M3U playlists, local files, or Xtream Codes credentials below to stream live channels and movies instantly.',
               style: GoogleFonts.inter(
-                fontSize: 13,
+                fontSize: 13 * fs,
                 color: AppTheme.textSecondary,
                 height: 1.4,
               ),
@@ -355,14 +372,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       children: [
         if (playlists.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(left: 24, right: 24, bottom: 4),
+            padding: EdgeInsets.only(
+              left: hPad + 4,
+              right: hPad + 4,
+              bottom: 4,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Active Playlists',
                   style: GoogleFonts.outfit(
-                    fontSize: 18,
+                    fontSize: 18 * fs,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textPrimary,
                   ),
@@ -391,9 +412,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
         SizedBox(
-          height: 310,
+          height: ResponsiveHelper.playlistCardHeight(context),
           child: PageView.builder(
-            controller: PageController(viewportFraction: 0.92),
+            controller: PageController(
+              viewportFraction: ResponsiveHelper.carouselViewportFraction(
+                context,
+              ),
+            ),
             itemCount: playlists.length,
             itemBuilder: (context, index) {
               final playlist = playlists[index];
@@ -409,206 +434,212 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ? AppTheme.primaryLight
                   : const Color(0xFF00D2FF);
 
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.primary.withValues(alpha: 0.18),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: Container(
-                    padding: const EdgeInsets.all(22),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF38126E), Color(0xFF16062B)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+              return Center(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.primary.withValues(alpha: 0.18),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
                       ),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: AppTheme.surfaceBorder.withValues(alpha: 0.8),
-                        width: 1,
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: Container(
+                      padding: EdgeInsets.all(isTab ? 28 : 22),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF38126E), Color(0xFF16062B)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: AppTheme.surfaceBorder.withValues(alpha: 0.8),
+                          width: 1,
+                        ),
                       ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 5,
-                              ),
-                              decoration: BoxDecoration(
-                                color: glowColor.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: glowColor.withValues(alpha: 0.25),
-                                  width: 0.5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: glowColor.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: glowColor.withValues(alpha: 0.25),
+                                    width: 0.5,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(typeIcon, color: glowColor, size: 12),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      playlist.type == PlaylistType.xtream
+                                          ? 'XTREAM CODES'
+                                          : playlist.type == PlaylistType.m3uUrl
+                                          ? 'M3U PLAYLIST'
+                                          : 'LOCAL PLAYLIST',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w800,
+                                        color: glowColor,
+                                        letterSpacing: 0.8,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(typeIcon, color: glowColor, size: 12),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    playlist.type == PlaylistType.xtream
-                                        ? 'XTREAM CODES'
-                                        : playlist.type == PlaylistType.m3uUrl
-                                        ? 'M3U PLAYLIST'
-                                        : 'LOCAL PLAYLIST',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.w800,
-                                      color: glowColor,
-                                      letterSpacing: 0.8,
+                              PopupMenuButton<String>(
+                                icon: const Icon(
+                                  Icons.more_vert_rounded,
+                                  color: Colors.white70,
+                                ),
+                                color: AppTheme.bgElevated,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  side: const BorderSide(
+                                    color: AppTheme.surfaceBorder,
+                                  ),
+                                ),
+                                onSelected: (value) {
+                                  if (value == 'rename') {
+                                    _showRenameDialog(context, playlist);
+                                  } else if (value == 'delete') {
+                                    _showDeleteDialog(context, playlist);
+                                  }
+                                },
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    value: 'rename',
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.edit_rounded,
+                                          color: AppTheme.textPrimary,
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          'Rename',
+                                          style: GoogleFonts.inter(
+                                            color: AppTheme.textPrimary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'delete',
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.delete_rounded,
+                                          color: AppTheme.error,
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          'Delete',
+                                          style: GoogleFonts.inter(
+                                            color: AppTheme.error,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                            PopupMenuButton<String>(
-                              icon: const Icon(
-                                Icons.more_vert_rounded,
-                                color: Colors.white70,
-                              ),
-                              color: AppTheme.bgElevated,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(
-                                  color: AppTheme.surfaceBorder,
-                                ),
-                              ),
-                              onSelected: (value) {
-                                if (value == 'rename') {
-                                  _showRenameDialog(context, playlist);
-                                } else if (value == 'delete') {
-                                  _showDeleteDialog(context, playlist);
-                                }
-                              },
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  value: 'rename',
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.edit_rounded,
-                                        color: AppTheme.textPrimary,
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Text(
-                                        'Rename',
-                                        style: GoogleFonts.inter(
-                                          color: AppTheme.textPrimary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem(
-                                  value: 'delete',
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.delete_rounded,
-                                        color: AppTheme.error,
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Text(
-                                        'Delete',
-                                        style: GoogleFonts.inter(
-                                          color: AppTheme.error,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        Text(
-                          playlist.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.outfit(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            letterSpacing: -0.5,
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          'Ready to stream • Click below to launch the media center',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: AppTheme.textSecondary.withValues(
-                              alpha: 0.8,
+                          const Spacer(),
+                          Text(
+                            playlist.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.outfit(
+                              fontSize: 24 * fs,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: -0.5,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 22),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 54,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(27),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.15),
-                                width: 1,
+                          const SizedBox(height: 6),
+                          Text(
+                            'Ready to stream • Click below to launch the media center',
+                            style: GoogleFonts.inter(
+                              fontSize: 12 * fs,
+                              color: AppTheme.textSecondary.withValues(
+                                alpha: 0.8,
                               ),
                             ),
-                            child: ElevatedButton(
-                              onPressed: () => _openPlaylist(context, playlist),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
-                                shadowColor: Colors.transparent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(27),
+                          ),
+                          const SizedBox(height: 22),
+                          SizedBox(
+                            width: double.infinity,
+                            height: isTab ? 64 : 54,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.08),
+                                borderRadius: BorderRadius.circular(27),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  width: 1,
                                 ),
-                                elevation: 0,
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.play_arrow_rounded,
-                                    size: 24,
-                                    color: Colors.white,
+                              child: ElevatedButton(
+                                onPressed: () =>
+                                    _openPlaylist(context, playlist),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  foregroundColor: Colors.white,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(27),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Watch Now',
-                                    style: GoogleFonts.outfit(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 16,
-                                      letterSpacing: 0.5,
+                                  elevation: 0,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.play_arrow_rounded,
+                                      size: isTab ? 30 : 24,
                                       color: Colors.white,
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Watch Now',
+                                      style: GoogleFonts.outfit(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16 * fs,
+                                        letterSpacing: 0.5,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -630,7 +661,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+          padding: EdgeInsets.symmetric(
+            vertical: ResponsiveHelper.isTablet(context) ? 28 : 18,
+            horizontal: ResponsiveHelper.isTablet(context) ? 16 : 8,
+          ),
           decoration: BoxDecoration(
             color: AppTheme.bgCard.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(20),
@@ -649,13 +683,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: color, size: 32),
-              const SizedBox(height: 12),
+              Icon(
+                icon,
+                color: color,
+                size: ResponsiveHelper.isTablet(context) ? 44 : 32,
+              ),
+              SizedBox(height: ResponsiveHelper.isTablet(context) ? 16 : 12),
               Text(
                 title,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.outfit(
-                  fontSize: 14,
+                  fontSize: ResponsiveHelper.isTablet(context) ? 18 : 14,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
@@ -669,7 +707,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     : 'Server login',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                  fontSize: 10,
+                  fontSize: ResponsiveHelper.isTablet(context) ? 13 : 10,
                   fontWeight: FontWeight.w500,
                   color: AppTheme.textMuted,
                 ),
@@ -816,9 +854,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 MaterialPageRoute(builder: (_) => const CategoryScreen()),
               ).then((_) {
                 // Ensure we return to portrait when coming back from the player
-                SystemChrome.setPreferredOrientations([
-                  DeviceOrientation.portraitUp,
-                ]);
+                ResponsiveHelper.setPortraitOrAllOrientations(context);
                 SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
               });
             }
