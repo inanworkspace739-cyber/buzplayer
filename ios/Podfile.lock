@@ -36,11 +36,11 @@ PODS:
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
-  - Google-Mobile-Ads-SDK (12.14.0):
+  - Google-Mobile-Ads-SDK (13.2.0):
     - GoogleUserMessagingPlatform (>= 1.1)
-  - google_mobile_ads (7.0.0):
+  - google_mobile_ads (8.0.0):
     - Flutter
-    - Google-Mobile-Ads-SDK (~> 12.14.0)
+    - Google-Mobile-Ads-SDK (~> 13.2.0)
     - webview_flutter_wkwebview
   - GoogleUserMessagingPlatform (3.1.0)
   - media_kit_libs_ios_video (1.0.4):
@@ -54,9 +54,9 @@ PODS:
     - FlutterMacOS
   - screen_brightness_ios (0.1.0):
     - Flutter
-  - SDWebImage (5.21.6):
-    - SDWebImage/Core (= 5.21.6)
-  - SDWebImage/Core (5.21.6)
+  - SDWebImage (5.21.7):
+    - SDWebImage/Core (= 5.21.7)
+  - SDWebImage/Core (5.21.7)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -143,15 +143,15 @@ SPEC CHECKSUMS:
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  Google-Mobile-Ads-SDK: 4534fd2dfcd3f705c5485a6633c5188d03d4eed2
-  google_mobile_ads: df3008bafbe1f2ad6862f87334e560d2f047f902
+  Google-Mobile-Ads-SDK: f0365e190d66539c65cea8ded43e2c367abb5477
+  google_mobile_ads: fc71399df4ee37c5637400f351898ee22543f75b
   GoogleUserMessagingPlatform: befe603da6501006420c206222acd449bba45a9c
   media_kit_libs_ios_video: 5a18affdb97d1f5d466dc79988b13eff6c5e2854
   media_kit_video: 1746e198cb697d1ffb734b1d05ec429d1fcd1474
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
   screen_brightness_ios: 5ed898fa50fa82a26171c086ca5e28228f932576
-  SDWebImage: 1bb6a1b84b6fe87b972a102bdc77dd589df33477
+  SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
